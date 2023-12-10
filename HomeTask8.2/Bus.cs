@@ -2,84 +2,131 @@
 {
     public class Bus
     {
-        public const int MaxSpeed = 90;
-        public const int NumberOfSeats = 20;
-
-        private string name;
-        public string Name
+        private double _maxSpeed;
+        private int _maxCountOfSeats;
+        private double _speed;
+        public double Speed
         {
-            get { return name; }
-            set { name = value; }
-        }
-        private int currentSpeed;
-        public int CurrentSpeed
-        {
-            get { return currentSpeed; }
-            set { currentSpeed = value; }
-        }
-        private Dictionary<int, string> seats;
-        public Dictionary<int, string> Seats
-        { get { return seats; } }
-
-        private List<string> passengers;
-        public Bus()
-        {
-            passengers = new List<string>();
-            seats = new Dictionary<int, string>();
-        }
-
-        public void AddPassenger(string passenger)
-        {
-            if (passengers.Count < 20)
+            get { return _speed; }
+            set
             {
-                passengers.Add(passenger);
-            }
-            else
-            {
-                Console.WriteLine("Свободных мест нет!");
+                _speed = Math.Min(Math.Max(value, 0), _maxSpeed);
             }
         }
-
-        public void RemovePassenger(string passenger)
+        public double MaxSpeed
         {
-            if (passengers.Count > 1)
+            get { return _maxSpeed; }
+            set
             {
-                passengers.Remove(passenger);
-            }
-            else
-            {
-                Console.WriteLine("В автобусе нет пассажиров!");
-            }
-        }
-
-        public void SpeedDown(int speed)
-        {
-            currentSpeed -= speed;
-            if (currentSpeed < 0)
-            {
-                currentSpeed = 0;
-                Console.WriteLine("Вы остановились");
-            }
-            else
-            {
-                Console.WriteLine($"Текущая скорость: {currentSpeed}");
-            }
-        }
-
-        public void SpeedUp(int speed)
-        {
-            {
-                currentSpeed += speed;
-                if (currentSpeed > MaxSpeed)
+                if (value > 0)
                 {
-                    currentSpeed = MaxSpeed;
-                    Console.WriteLine($"Вы движетесь с максимальной скоростью: {currentSpeed}");
+                    _maxSpeed = value;
                 }
                 else
                 {
-                    Console.WriteLine($"Текущая скорость: {currentSpeed}");
+                    throw new ArgumentException(nameof(value));
                 }
             }
+        }
+
+        public int MaxCountOfSeats
+        {
+            get { return _maxCountOfSeats; }
+            set
+            {
+                if (value > 0)
+                {
+                    _maxCountOfSeats = value;
+                }
+                else
+                {
+                    throw new ArgumentException(nameof(value));
+                }
+            }
+        }
+        public bool HasEmptySeats { get; set; }
+        public List<string> Passangers { get; set; }
+        public Dictionary<int, string> Seats { get; set; }
+
+        public Bus(int maxSpeed, int maxCountOfSeats)
+        {
+            MaxSpeed = maxSpeed;
+            MaxCountOfSeats = maxCountOfSeats;
+            Speed = 0;
+            HasEmptySeats = true;
+            Passangers = new List<string>();
+            Seats = new Dictionary<int, string>();
+        }
+
+        public void IncreaseSpead(int difference)
+        {
+            Speed += difference;
+        }
+
+        public void DecreaseSpead(int difference)
+        {
+            Speed -= difference;
+        }
+
+        public bool AddPassangers(List<string> passangers)
+        {
+            if (passangers is null)
+            {
+                throw new ArgumentNullException(nameof(passangers));
+            }
+
+            var isSuccessful = true;
+            foreach (var passenger in passangers)
+            {
+                isSuccessful = AddPassanger(passenger);
+                if (!isSuccessful)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public bool AddPassanger(string passanger)
+        {
+            if (string.IsNullOrEmpty(passanger))
+            {
+                throw new ArgumentException("", nameof(passanger));
+            }
+
+            if (HasEmptySeats)
+            {
+                Passangers.Add(passanger);
+                HasEmptySeats = Passangers.Count < MaxCountOfSeats;
+                for (int i = 0; i < MaxCountOfSeats; i++)
+                {
+                    if (!Seats.ContainsKey(i))
+                    {
+                        Seats.Add(i, passanger);
+                        return true;
+                    }
+                }
+            }
+                return false;
+        }
+
+        public bool RemovePassanger(string passanger)
+        {
+            if (string.IsNullOrEmpty(passanger))
+            {
+                throw new ArgumentException("", nameof(passanger));
+            }
+
+            if (Passangers.Contains(passanger))
+            {
+                Seats.Remove(Passangers.IndexOf(passanger));
+                Passangers.Remove(passanger);
+                HasEmptySeats = Passangers.Count < MaxCountOfSeats;
+                return true;
+            }
+
+            return false;
         }
     }
 }

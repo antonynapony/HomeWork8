@@ -3,48 +3,58 @@
 
     public class Good
     {
-        private int index;
-        public int Index
-        {
-            get { return index; }
-            set { index = value; }
-        }
-        private string name;
+        private string _name;
+        private string _shop;
+        private decimal _price;
         public string Name
         {
-            get { return name; }
-            set { name = value; }
+            get { return _name; }
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    _name = value;
+                }
+                else
+                {
+                    throw new ArgumentException("", nameof(value));
+                }
+            }
         }
-
-        private string shop;
         public string Shop
         {
-            get { return shop; }
-            set { shop = value; }
+            get { return _shop; }
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    _shop = value;
+                }
+                else
+                {
+                    throw new ArgumentException("", nameof(value));
+                }
+            }
         }
-        private double price;
-        public double Price
+        public decimal Price
         {
-            get { return price; }
-            set { price = value; }
+            get { return _price; }
+            set
+            {
+                if (value > 0)
+                {
+                    _price = value;
+                }
+                else
+                {
+                    throw new ArgumentException("", nameof(value));
+                }
+            }
         }
 
-        public Good() { }
-
-        public Good(int index, string name, string shop, double price)
+        public override string ToString()
         {
-            Index = index;
-            Name = name;
-            Shop = shop;
-            Price = price;
-        }
-
-        public void Print()
-        {
-            Console.WriteLine($"Индекс: {index}");
-            Console.WriteLine($"Наименование: {name}");
-            Console.WriteLine($"Магазин: {shop}");
-            Console.WriteLine($"Стоимость: {price}");
+            return $"Good: {Name}, {Shop}, {Price:F2}";
         }
     }
 }

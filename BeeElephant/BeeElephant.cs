@@ -80,29 +80,13 @@
             {
                 if (meal == "nectar")
                 {
-                    bee += value;
-                    elephant -= value;
-                    if (elephant < 0)
-                    {
-                        elephant = 0;
-                        if (bee > 100)
-                        {
-                            bee = 100;
-                        }
-                    }
+                    Bee += value;
+                    Elephant -= value;
                 }
                 else if (meal == "grass")
                 {
-                        elephant += value;
-                        bee -= value;
-                    if (bee < 0)
-                    {
-                        bee = 0;
-                        if (elephant > 100)
-                        {
-                            elephant = 100;
-                        }
-                    }
+                        Elephant += value;
+                        Bee -= value;
                 }
                 else
                 {
